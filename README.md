@@ -20,9 +20,9 @@ zcfan has the following default fan states:
 
 | Config name | thinkpad_acpi fan level | Default trip temperature (C) |
 |-------------|-------------------------|------------------------------|
-| max_temp    | 7                       | 90                           |
-| med_temp    | 4                       | 80                           |
-| low_temp    | 1                       | 70                           |
+| max_temp    | full-speed              | 90                           |
+| med_temp    | 7                       | 80                           |
+| low_temp    | 5                       | 70                           |
 
 If no trip temperature is reached, the fan will be turned off.
 

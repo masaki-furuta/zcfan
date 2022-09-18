@@ -28,15 +28,16 @@
 /* Must be highest to lowest temp */
 enum FanLevel { FAN_MAX, FAN_MED, FAN_LOW, FAN_OFF, FAN_INVALID };
 struct Rule {
-    const int tpacpi_level;
+    //const int tpacpi_level;
+    const char *tpacpi_level;
     int threshold;
     const char *name;
 };
 static struct Rule rules[] = {
-    [FAN_MAX] = {7, 90, "maximum"},
-    [FAN_MED] = {4, 80, "medium"},
-    [FAN_LOW] = {1, 70, "low"},
-    [FAN_OFF] = {0, TEMP_MIN, "off"},
+    [FAN_MAX] = {"full-speed", 90, "maximum"},
+    [FAN_MED] = {"7", 80, "medium"},
+    [FAN_LOW] = {"5", 70, "low"},
+    [FAN_OFF] = {"0", TEMP_MIN, "off"},
 };
 
 static struct timespec last_watchdog_ping = {0, 0};
@@ -166,7 +167,7 @@ static int set_fan_level(void) {
             if (rule != current_rule) {
                 current_rule = rule;
                 tick_penalty = tick_hysteresis;
-                ret = snprintf(level, sizeof(level), "%d", rule->tpacpi_level);
+                ret = snprintf(level, sizeof(level), "%s", rule->tpacpi_level);
                 expect(ret >= 0 && (size_t)ret < sizeof(level));
                 printf("[FAN] Temperature now %dC, fan set to %s\n", max_temp,
                        rule->name);
@@ -195,7 +196,7 @@ static void maybe_ping_watchdog(void) {
     }
 
     expect(current_rule); /* Already set up on first run by set_fan_level */
-    ret = snprintf(level, sizeof(level), "%d", current_rule->tpacpi_level);
+    ret = snprintf(level, sizeof(level), "%s", current_rule->tpacpi_level);
     expect(ret >= 0 && (size_t)ret < sizeof(level));
     write_fan_level(level);
 }
